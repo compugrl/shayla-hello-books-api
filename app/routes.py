@@ -32,7 +32,7 @@ def create_book():
 
 @books_bp.route("", methods=["GET"])
 def read_all_books():
-    
+    # return make_response("I'm a teapot!", 418)
     title_query = request.args.get("title")
     if title_query:
         books = Book.query.filter_by(title=title_query)
