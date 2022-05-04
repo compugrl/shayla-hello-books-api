@@ -31,3 +31,25 @@ def test_create_one_book(client):
     # Assert
     assert response.status_code == 201
     assert response_body == "Book New Book successfully created"
+
+def test_get_nonexisting_book(client, two_saved_books):
+    # Act
+    response = client.get("/books/12345698225498")
+    response_body = response.get_json()
+
+    # Assert
+    assert response.status_code == 404
+    assert response_body == {
+        "message": "Book 12345698225498 not found"
+    }
+
+def test_get_invalid_book(client, two_saved_books):
+    # Act
+    response = client.get("/books/dog")
+    response_body = response.get_json()
+
+    # Assert
+    assert response.status_code == 400
+    assert response_body == {
+        "message": "Book dog is invalid"
+    }
