@@ -10,12 +10,12 @@ def validate_book(book_id):
     try:
         book_id = int(book_id)
     except:
-        abort(make_response({"message":f"book {book_id} invalid"}, 400))
+        abort(make_response(jsonify({"message":f"Book {book_id} is invalid"}), 400))
 
     book = Book.query.get(book_id)
 
     if not book:
-        abort(make_response({"message":f"book {book_id} not found"}, 404))
+        abort(make_response(jsonify({"message":f"Book {book_id} not found"}), 404))
 
     return book
 
