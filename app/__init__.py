@@ -8,7 +8,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 load_dotenv()
 
-def create_app(test_config=None):
+def create_app(test_config="TESTING"):
     app = Flask(__name__)
 
     if not test_config:
@@ -32,7 +32,7 @@ def create_app(test_config=None):
     from .routes import books_bp
     app.register_blueprint(books_bp)
 
-    from .routes import authors_bp
+    from .author_routes import authors_bp
     app.register_blueprint(authors_bp)
 
     return app

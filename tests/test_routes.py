@@ -31,3 +31,15 @@ def test_create_one_book(client):
     # Assert
     assert response.status_code == 201
     assert response_body == "Book New Book successfully created"
+
+def test_get_one_author(client, two_saved_authors):
+    # Act
+    response = client.get("/authors/1")
+    response_body = response.get_json()
+
+    # Assert
+    assert response.status_code == 200
+    assert response_body == {
+        "author_id": 1,
+        "author_name": "Shayla Logan"
+    }

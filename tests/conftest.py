@@ -1,8 +1,10 @@
+from unicodedata import name
 import pytest
 from app import create_app
 from app import db
 from flask.signals import request_finished
 from app.models.book import Book
+from app.models.author import Author
 
 @pytest.fixture
 def app():
@@ -37,4 +39,16 @@ def two_saved_books(app):
     # Alternatively, we could do
     # db.session.add(ocean_book)
     # db.session.add(mountain_book)
+    db.session.commit()
+
+@pytest.fixture
+def two_saved_authors(app):
+    # Arrange
+    author_SSL = Author(author_name="Shayla Logan")
+    author_MRS = Author(author_name="Miss Sloth")
+
+    db.session.add_all([author_SSL, author_MRS])
+    # Alternatively, we could do
+    # db.session.add(author_SSL)
+    # db.session.add(author_MRS)
     db.session.commit()
