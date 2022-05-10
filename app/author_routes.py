@@ -13,7 +13,7 @@ def validate_author(author_id):
     except:
         abort(make_response({"message":f"author {author_id} invalid"}, 400))
 
-    author = author.query.get(author_id)
+    author = Author.query.get(author_id)
 
     if not author:
         abort(make_response({"message":f"author {author_id} not found"}, 404))
@@ -35,9 +35,9 @@ def read_all_authors():
     name_param = request.args.get("author_name")
 
     if name_param:
-        authors = author.query.filter_by(author_name=name_param)
+        authors = Author.query.filter_by(author_name=name_param)
     else:
-        authors = author.query.all()
+        authors = Author.query.all()
 
     authors_response = []
 
@@ -50,12 +50,28 @@ def read_all_authors():
         )
     return jsonify(authors_response)
 
+@authors_bp.route("/<author_id>/books", methods=["GET"])
+def read_books(author_id):
+
+    author = validate_author(author_id)
+
+    books_response = []
+    for book in author.books:
+        books_response.append(
+            {
+            "id": book.id,
+            "title": book.title,
+            "description": book.description
+            }
+        )
+    return jsonify(books_response)
+
 @authors_bp.route("/<author_id>", methods=["GET"])
 def read_one_author(author_id):
     author = validate_author(author_id)
     return {
-            "author_id": author.id,
-            "author_name": author.name
+            "author_id": author.author_id,
+            "author_name": author.author_name
         }
 
 @authors_bp.route("/<author_id>", methods=["PUT"])
@@ -78,3 +94,18 @@ def delete_author(author_id):
     db.session.commit()
 
     return make_response(jsonify(f"author #{author.id} successfully deleted"))
+
+@authors_bp.route("/<author_id>/books", methods=["POST"])
+def create_book_for_author(author_id):
+    author = validate_author(author_id)
+
+    request_body = request.get_json()
+    new_book = Book(
+        title=request_body["title"],
+        description=request_body["description"],
+        author=author)
+
+    db.session.add(new_book)
+    db.session.commit()
+
+    return make_response(jsonify(f"Book {new_book.title} by {new_book.author.name} successfully created"), 201)

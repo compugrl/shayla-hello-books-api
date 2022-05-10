@@ -8,7 +8,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 load_dotenv()
 
-def create_app(test_config="TESTING"):
+def create_app(test_config=None):
     app = Flask(__name__)
 
     if not test_config:
